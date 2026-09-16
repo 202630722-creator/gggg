@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나만의 동물 테스트</title>
+    <style>
+        /* 기본 스타일 리셋 및 배경 설정 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* 컨테이너 카드 */
+        .container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 480px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        p.subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* 폼 요소 스타일 */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #444;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #764ba2;
+        }
+
+        /* 버튼 스타일 */
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* 결과 화면 스타일 (초기엔 숨김) */
+        #result-screen {
+            display: none;
+        }
+
+        .animal-emoji {
+            font-size: 80px;
+            margin: 20px 0;
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        .animal-name {
+            font-size: 26px;
+            color: #2575fc;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .animal-desc {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .btn-retry {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-retry:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 1. 정보 입력 화면 -->
+        <div id="input-screen">
+            <h1>나만의 동물 찾기 🐾</h1>
+            <p class="subtitle">나의 정보를 입력하고 어울리는 동물을 찾아보세요!</p>
+            
+            <form id="animal-form">
+                <div class="form-group">
+                    <label for="name">이름 (또는 닉네임)</label>
+                    <input type="text" id="name" placeholder="이름을 입력하세요" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="birth">생년월일</label>
+                    <input type="date" id="birth" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="height">키 (cm)</label>
+                    <input type="number" id="height" placeholder="예: 170" min="100" max="230" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="mbti">MBTI</label>
+                    <select id="mbti" required>
+                        <option value="" disabled selected>MBTI 선택</option>
+                        <option value="E">외향형 (E)</option>
+                        <option value="I">내향형 (I)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="activity">주말에 주로 하는 활동</label>
+                    <select id="activity" required>
+                        <option value="home">집에서 푹 쉬기 / 넷플릭스</option>
+                        <option value="outside">야외 활동 / 친구 만나기</option>
+                        <option value="study">자기계발 / 취미 활동</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit">내 결과 확인하기</button>
+            </form>
+        </div>
+
+        <!-- 2. 결과 출력 화면 -->
+        <div id="result-screen">
+            <h1 id="user-greeting">님의 결과</h1>
+            <div class="animal-emoji" id="animal-emoji">🦁</div>
+            <div class="animal-name" id="animal-name">사자</div>
+            <div class="animal-desc" id="animal-desc">
+                설명이 여기에 출력됩니다.
+            </div>
+            <button type="button" class="btn-retry" onclick="resetForm()">다시 테스트하기</button>
+        </div>
+    </div>
+
+    <script>
+        // 결과 데이터베이스 (조건에 알맞게 추가 가능)
+        const animals = {
+            cat: {
+                name: "조용하고 도도한 고양이 🐱",
+                emoji: "🐱",
+                desc: "당신은 혼자만의 시간을 중요시하며 섬세한 감성을 가지고 있습니다. 신중하고 지혜로우며 필요할 때 자신만의 매력을 발산합니다!"
+            },
+            dog: {
+                name: "활발하고 친근한 강아지 🐶",
+                emoji: "🐶",
+                desc: "당신은 사람들과 어울리는 것을 좋아하고 사교성이 뛰어납니다! 긍정적인 에너지를 주위에 널리 전파하는 스타일입니다."
+            },
+            owl: {
+                name: "지혜로운 올빼미 🦉",
+                emoji: "🦉",
+                desc: "당신은 자기계발과 깊이 있는 생각을 좋아하는 지성파입니다. 차분하고 조용한 분위기 속에서 본인의 능력을 발휘합니다."
+            },
+            monkey: {
+                name: "호기심 많고 유쾌한 원숭이 🐒",
+                emoji: "🐒",
+                desc: "당신은 열정적이고 항상 새로운 것을 탐구하는 도전을 즐깁니다! 주위 사람들에게 재치와 즐거움을 가져다줍니다."
+            }
+        };
+
+        const form = document.getElementById('animal-form');
+        const inputScreen = document.getElementById('input-screen');
+        const resultScreen = document.getElementById('result-screen');
+
+        // 폼 제출 이벤트
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // 페이지 리로드 방지
+
+            const name = document.getElementById('name').value;
+            const mbti = document.getElementById('mbti').value;
+            const activity = document.getElementById('activity').value;
+
+            // 로직: MBTI와 주말 활동에 따라 동물 매칭
+            let selectedAnimal;
+
+            if (mbti === 'I' && activity === 'home') {
+                selectedAnimal = animals.cat;
+            } else if (mbti === 'E' && activity === 'outside') {
+                selectedAnimal = animals.dog;
+            } else if (mbti === 'I' && activity === 'study') {
+                selectedAnimal = animals.owl;
+            } else {
+                selectedAnimal = animals.monkey;
+            }
+
+            // 결과 화면 업데이트
+            document.getElementById('user-greeting').innerText = `${name} 님의 동물은...`;
+            document.getElementById('animal-emoji').innerText = selectedAnimal.emoji;
+            document.getElementById('animal-name').innerText = selectedAnimal.name;
+            document.getElementById('animal-desc').innerText = selectedAnimal.desc;
+
+            // 화면 전환
+            inputScreen.style.display = 'none';
+            resultScreen.style.display = 'block';
+        });
+
+        // 다시 테스트하기 버튼 기능
+        function resetForm() {
+            form.reset();
+            resultScreen.style.display = 'none';
+            inputScreen.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
